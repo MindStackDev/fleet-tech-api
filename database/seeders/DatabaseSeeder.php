@@ -142,6 +142,40 @@ final class DatabaseSeeder extends Seeder
         Vehicle::create([
             'company_id' => $company->id,
             'vehicle_type_id' => $camioneta->id,
+            'plate_number' => 'ABC-123',
+            'vin' => '9AJFT2264P0194821',
+            'brand' => 'Toyota',
+            'model' => 'Hilux 4x4',
+            'year' => 2023,
+            'current_mileage' => 18450,
+            'status' => VehicleStatus::ACTIVE,
+            'specs' => [
+                'motor' => '2.8L Turbo Diésel',
+                'combustible' => 'Diésel',
+                'color' => 'Blanco',
+                'carroceria' => 'Pick-up Doble Cabina',
+                'empresa_cliente' => 'Transportes y Logística Minera S.A.C.',
+                'ruc_cliente' => '20492817401',
+                'flota' => 'Flota Minera',
+                'bahia_asignada' => 'Base Norte • Bahía 4',
+                'ultimo_servicio' => [
+                    'fecha' => '14 Ene 2025',
+                    'descripcion' => 'Mantenimiento preventivo de sensor de combustible',
+                    'tecnico' => 'M. Soto',
+                    'dispositivo' => 'Teltonika FMB920',
+                    'estado' => 'Estado Operativo OK',
+                ],
+                'materiales_asignados' => [
+                    ['categoria' => 'ARNÉS', 'nombre' => 'Arnés OBD2 Hilux', 'detalle' => 'Conector rápido T2'],
+                    ['categoria' => 'CORTE', 'nombre' => 'Relé corta-corriente', 'detalle' => '12V 40A protegido'],
+                    ['categoria' => 'SENSOR', 'nombre' => 'Sensor BLE combustible', 'detalle' => 'Escort TD-BLE digital'],
+                ],
+            ],
+        ]);
+
+        Vehicle::create([
+            'company_id' => $company->id,
+            'vehicle_type_id' => $camioneta->id,
             'plate_number' => 'PAT-303',
             'vin' => '8AJBA3CD401987654',
             'brand' => 'Toyota',
