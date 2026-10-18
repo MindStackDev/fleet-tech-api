@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\V1\Admin\AdminDashboardController;
+use App\Http\Controllers\Api\V1\Admin\AdminOperatorController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Checklists\TemplateController;
 use App\Http\Controllers\Api\V1\Defects\DefectController;
@@ -49,5 +51,21 @@ Route::prefix('v1')->group(function () {
         Route::get('/defects', [DefectController::class, 'index']);
         Route::get('/defects/{id}', [DefectController::class, 'show']);
         Route::patch('/defects/{id}/resolve', [DefectController::class, 'resolve']);
+
+        // ------------------------------------------
+        // Rutas Exclusivas de Administrador
+        // ------------------------------------------
+        Route::middleware('role.admin')->prefix('admin')->group(function () {
+            // Actividad diaria y resumen de métricas
+            Route::get('/daily-activity', [AdminDashboardController::class, 'dailyActivity']);
+
+            // Gestión de Operadores
+            Route::get('/operators', [AdminOperatorController::class, 'index']);
+            Route::post('/operators', [AdminOperatorController::class, 'store']);
+            Route::get('/operators/{id}', [AdminOperatorController::class, 'show']);
+            Route::put('/operators/{id}', [AdminOperatorController::class, 'update']);
+            Route::patch('/operators/{id}/toggle-status', [AdminOperatorController::class, 'toggleStatus']);
+            Route::delete('/operators/{id}', [AdminOperatorController::class, 'destroy']);
+        });
     });
 });
