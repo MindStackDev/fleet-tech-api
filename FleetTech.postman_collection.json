@@ -1,0 +1,837 @@
+{
+	"info": {
+		"_postman_id": "f1e37-tech-api-collection-v1",
+		"name": "FleetTech Enterprise API",
+		"description": "Colección completa de endpoints para FleetTech Enterprise API (Laravel Sanctum). Incluye autenticación automática, CRUDs de Operadores, Vehículos, Inspecciones, Defectos y Dashboard.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01. Autenticación (Auth)",
+			"item": [
+				{
+					"name": "Login (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"    pm.collectionVariables.set(\"auth_token\", jsonData.data.token);",
+									"    console.log(\"Token guardado automáticamente en la variable auth_token\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@fleettech.pe\",\n    \"password\": \"password123\",\n    \"device_name\": \"postman-desktop\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Inicia sesión con credenciales de Administrador. El script de tests guarda automáticamente el token en `{{auth_token}}`."
+					},
+					"response": []
+				},
+				{
+					"name": "Login (Operador)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"    pm.collectionVariables.set(\"auth_token\", jsonData.data.token);",
+									"    console.log(\"Token de Operador guardado\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"operador.manana@fleettech.pe\",\n    \"password\": \"password123\",\n    \"device_name\": \"postman-mobile\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mi Perfil (/auth/me)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cerrar Sesión (/auth/logout)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "02. Flota y Vehículos (Vehicles)",
+			"item": [
+				{
+					"name": "Listar Tipos de Vehículo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vehicle-types",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vehicle-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Vehículos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vehicles?per_page=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vehicles"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "20"
+								},
+								{
+									"key": "status",
+									"value": "operational",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "Volvo",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle de Vehículo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/vehicles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vehicles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Vehículo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"company_id\": 1,\n    \"vehicle_type_id\": 1,\n    \"plate_number\": \"ABC-123\",\n    \"vin\": \"1HGCR2F83HA123456\",\n    \"brand\": \"Volvo\",\n    \"model\": \"FH 540\",\n    \"year\": 2024,\n    \"current_mileage\": 15000,\n    \"status\": \"operational\",\n    \"specs\": {\n        \"fuel_type\": \"Diesel\",\n        \"transmission\": \"Automática\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/vehicles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"vehicles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "03. Plantillas de Checklist",
+			"item": [
+				{
+					"name": "Listar Plantillas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/checklist-templates",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"checklist-templates"
+							],
+							"query": [
+								{
+									"key": "vehicle_type_id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle de Plantilla (con Secciones e Ítems)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/checklist-templates/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"checklist-templates",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "04. Inspecciones (Inspections)",
+			"item": [
+				{
+					"name": "Listar Inspecciones",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/inspections?per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "15"
+								},
+								{
+									"key": "vehicle_id",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "inspection_type",
+									"value": "pre_trip",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle de Inspección",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/inspections/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear / Registrar Inspección",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vehicle_id\": 1,\n    \"checklist_template_id\": 1,\n    \"inspection_type\": \"pre_trip\",\n    \"shift\": \"morning\",\n    \"start_mileage\": 15200,\n    \"fuel_level\": \"3/4\",\n    \"yard_location\": \"Bahía 4 - Patio Callao\",\n    \"latitude\": -12.046374,\n    \"longitude\": -77.042793,\n    \"general_notes\": \"Inspección de pre-uso sin observaciones mayores.\",\n    \"answers\": [\n        {\n            \"checklist_item_id\": 1,\n            \"status\": \"pass\",\n            \"value\": \"ok\",\n            \"notes\": \"Presión de neumáticos revisada\"\n        },\n        {\n            \"checklist_item_id\": 2,\n            \"status\": \"fail\",\n            \"value\": \"bajo\",\n            \"notes\": \"Nivel de aceite por debajo del mínimo recomendado\",\n            \"evidences\": [\n                {\n                    \"file_path\": \"evidences/oil_gauge_sample.jpg\",\n                    \"caption\": \"Varilla de aceite en marca inferior\"\n                }\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inspections",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "05. Defectos y Taller (Defects)",
+			"item": [
+				{
+					"name": "Listar Defectos Reportados",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/defects?status=open",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"defects"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "open"
+								},
+								{
+									"key": "severity",
+									"value": "critical",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle de Defecto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/defects/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"defects",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resolver / Cerrar Defecto",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"resolution_notes\": \"Se rellenó aceite sintético 15W40 y se cambió filtro en taller.\",\n    \"resolved_evidence_path\": \"evidences/oil_fixed.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/defects/:id/resolve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"defects",
+								":id",
+								"resolve"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "06. Administración (Admin)",
+			"item": [
+				{
+					"name": "Dashboard Actividad Diaria",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/daily-activity",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"daily-activity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Operadores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/operators",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"operators"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Operador",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pedro Huamán\",\n    \"email\": \"pedro.huaman@fleettech.pe\",\n    \"password\": \"password123\",\n    \"phone\": \"+51 988777666\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/operators",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"operators"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detalle de Operador",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/operators/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"operators",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Operador",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pedro Huamán Actualizado\",\n    \"email\": \"pedro.huaman@fleettech.pe\",\n    \"phone\": \"+51 988777999\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/operators/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"operators",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cambiar Estado (Activo/Inactivo)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/operators/:id/toggle-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"operators",
+								":id",
+								"toggle-status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Operador",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/operators/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"operators",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
